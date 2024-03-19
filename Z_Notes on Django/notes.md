@@ -145,3 +145,74 @@ Notes.objects.filter(title__startswith="A note")
 >>> Notes.objects.filter(text__icontains = 'is').exclude(title__icontains='Django')
 <QuerySet [<Notes: Notes object (2)>]>
 
+# Building Dynami Webpages.
+## Creating a dynamic template.
+Now that we have notes, we need to create a way to view them. So we're going to create a new way to view them. 
+
+Go into views.py and create the following: 
+from django.shortcuts import render
+from .models import Notes #Import the models(tables from the database. We are going to use this to in our view.)
+
+def list(request): # Create a function to receive request. 
+    all_notes = Notes.objects.all() #A Variable that calls all the notes in our Database. ? If the note database is mammoth, is it smart to do this way?
+    return render(request, 'notes/notes_list.html', {'notes':all_notes}) #render the view with a template we'll create later.
+
+##### This is the same as what we did earlier, except we are querying for all notes and sending them to the template.
+
+* Create a new urls.py file in the notes folder.
+Add the following: 
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('notes', views.list),
+]
+* next you need to add this file exists in the smartnote project folder so traffic can be redirected here. 
+
+
+* In the urls.py folder in the smartproject project folder, we need to add the path to the notes app urls.py as well. (in the urlpatterns = [])
+
+Add the following in the smartproject project folder:
+    #added from notes app
+    path('smart/', include('notes.urls')), #all the urls added in the notes app will be after "smart/". This is to help keep the project organized. 
+
+### Time to add a new template to view the notes in the notes app folder.  
+* Create a new folder in notes called 'templates' and then another folder inside there called 'notes'. (Again this might seem redundant but it's a good practice to keep the apps organized in the file structure.)
+* Create a new file calles notes_list.html <- This should match file name from views.py
+
+#### Display content of a single note.
+Go to views and add a private key (pk)
+
+def detail(request, pk):
+    note = Notes.objects.get(pk=pk)
+    return render(request, 'notes/notes_details.html', {'note':note})
+
+* Next add the template.
+notes_detail.html
+
+* Need to add the url to urls.py in notes folder. But it will be different because we need to pass through the value of the note.
+urlpatterns = [
+    path('notes', views.list),
+    path('notes/<int:pk>', views.detail),
+] 
+  
+* Now you can pass through the value of a single note through the url. http://localhost:8000/smart/notes/2, http://localhost:8000/smart/notes/3, http://localhost:8000/smart/notes/"etc"
+* There is a problem here though. If you pass through a value of a note that doesn't exist, an error will be thrown. (in debug mode you'll see the error. in production the user will just get a 500 internal server error)
+
+To fix this, go back to the views.py file and add the following code: from django.http import Http404
+
+Then add a try except statement in the detail function.
+def detail(request, pk):
+    try:
+        note = Notes.objects.get(pk=pk)
+    except Notes.DoesNotExist:
+        raise Http404("Note does not exist.")
+    return render(request, 'notes/notes_details.html', {'note':note})
+* If you want you can add another template here for 404 errors.
+
+### Class Based Views. 
+
+
+
+
+

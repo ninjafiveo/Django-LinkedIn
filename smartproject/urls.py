@@ -28,5 +28,9 @@ urlpatterns = [
     #note: if you have multiple paths with the same name, home/, django loads the first and never looks at the second. Could lead to potential errors. 
     
     # New after creating the urls.py file in home app.
-    path('', include('home.urls'))
+    path('', include('home.urls')),
+    
+    #added from notes app
+    path('smart/', include('notes.urls')), #all the urls added in the notes app will be after "smart/". This is to help keep the project organized. 
+    
 ]
