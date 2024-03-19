@@ -15,15 +15,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include #added include when creating urls.py in the home app. Include function will be used to pass the file to the url patterns as a string.
 
 #import files here from views.py so we have access to the function we created. 
-from home import views
+# from home import views # Getting rid of this when we create the urls.py in the the home app.
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     #add path to the views file in home app.
-    path('home/', views.home),
-    path('about/', views.about),
+    # path('home/', views.home), # got rid of these when creating the urls.py in the home app.
+    # path('about/', views.about),# got rid of these when creating the urls.py in the home app.
     #note: if you have multiple paths with the same name, home/, django loads the first and never looks at the second. Could lead to potential errors. 
+    
+    # New after creating the urls.py file in home app.
+    path('', include('home.urls'))
 ]

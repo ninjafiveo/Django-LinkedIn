@@ -50,6 +50,22 @@ Each App should be self contained and everything that app needs is inside of it.
 You should be able to delete the entire app folder and everything else in the Django Project works prefectly. 
 
 
+####
+Django Admin Interface 
+Easy to create endpoints. 
+
+The interface allows you to manipulate data and the admin interface comes built in.
+http://127.0.0.1:8000/admin
+
+Update Database migrations with: python manage.py migrate
+
+Create a superuser - python manage.py createsuperuser
+user: admin
+email: michael.sekol@mahoningctc.com
+password: password
+
+imports in the views.py file:
+from django.contrib.auth.decorators import login_required
 
 
 
