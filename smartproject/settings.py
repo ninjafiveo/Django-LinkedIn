@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home', # This needed added so Django knew there was another app installed. The LinkedIn tutorial did not mention that. 
+    
+    #apps
+    'home', # This needed added so Django knew there was another app installed. The LinkedIn tutorial did not mention that.
+    'notes', #app added to test working with databases 
 ]
 
 MIDDLEWARE = [
