@@ -1,34 +1,28 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Notes List</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-        <h1>These are the notes:</h1>
-        <ul>
-            {% comment %} {% for note in notes %} {% endcomment %}
-            {% comment %} <li>{{note.title}}</li> {% endcomment %}
-        </ul>
+{% extends "base.html" %}
+{% block content %}
+    <div class = "wrapper">
+        <h1 class="my-5 main_header">These are the notes:</h1>
+        <div class = "row row-cols3 g-2">
             {% for note in notes %}
-                {% comment %} <li>{{note.title}}</li> {% endcomment %}
-                <table>
-                    <tr>
-                        <th style = "text-align: left; margin: 0; padding: 0;"><h2>{{note.title}}</h2></th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p>{{note.text}}<br />
-                            {{note.created}}
-                            </p>
-                        </td>
-                    </tr>
-                </table>
+            <div class="col">
+                <div class="p-3 border">
+                    <table>
+                        <tr>
+                            <th>
+                                <p><sup>{{note.created}}</sup></p>
+                                <a href="{% url 'notes.detail' pk=note.id %}"><h2>{{note.title}}</h2></a>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>{{note.text|truncatechars:20}}
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
             {% endfor %}
-
-        <h1>Some randomn HTML here.</h1>
-        
-        <script src="" async defer></script>
-    </body>
-</html>
+        </div>
+    </div>
+{% endblock %}

@@ -273,3 +273,146 @@ urlpatterns = [
     path('notes/', views.NotesListView.as_view()),
     path('notes/<int:pk>', views.NotesDetailView.as_view()),
 ]
+
+## 5. Building a Robist Front End in Django
+
+#### Static files in Django.
+In the parent folder, at the same level as smartproject and other app, create a folder called 'static'
+
+* Go to project folder, smartproject, and settings.py. In the settings.py file go to STATIC_URL. It should be, by default, '/static/' which is the same name of the folder we created. 
+* Add a new list: STATICFILES_DIRS = [ BASE_DIR / 'static' ]
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [ 
+    BASE_DIR / 'static'
+]
+* Create a new folder for the CSS files in it and add style.css to it. static/css/style.css
+* Add some css styling to it.
+* * now we need to make sure django and our templates recognize the file.
+* In the notes_list.html add {% load static %} to the top of the page. 
+
+#### How to set up a base html for every django template. 
+* * In the static folder create a templates folder and then a base.html file. 
+*  The block content is where you can inject code.
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type = "text/css" href="{% static 'css/style.css' %}"/>
+    </head>
+    <body>
+        {% block content %}
+        
+        
+        {% endblock%}
+        
+        <script src="" async defer></script>
+    </body>
+</html>
+
+* in the notes_list.html, let's modify it for the template. 
+* Repleace: {% load static %} with {% extends "base.html" %}
+* now you can get rid of all the html, head and body stuff, except for what you want in the "block content"
+
+{% extends "base.html" %}
+{% block content %}
+        <div class = "wrapper">
+        <h1 class="title_headers">These are the notes:</h1>
+        <ul>
+            {% comment %} {% for note in notes %} {% endcomment %}
+            {% comment %} <li>{{note.title}}</li> {% endcomment %}
+        </ul>
+        <div class = "note_wrapper">
+            {% for note in notes %}
+                {% comment %} <li>{{note.title}}</li> {% endcomment %}
+                <table>
+                    <tr>
+                        <th style = "text-align: left; margin: 0; padding: 0;"><h2>{{note.title}}</h2></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>{{note.text}}<br />
+
+                            <sup>{{note.created}}</sup>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            {% endfor %}
+        </div>
+        <h1>Some randomn HTML here.</h1>
+        
+            </div>
+{% endblock %}
+
+* Django can't find the template. Because the static template folder can't be found. So, in the project folder, smartproject, you have to add the template in the TEMPLATES = []  DIRS list. 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            BASE_DIR / 'static/templates'
+            ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                
+            ],
+        },
+    },
+]
+
+* Updated notes_list.html
+{% extends "base.html" %}
+{% block content %}
+        <div class = "wrapper">
+        <h1 class="title_headers">These are the notes:</h1>
+        <ul>
+            {% comment %} {% for note in notes %} {% endcomment %}
+            {% comment %} <li>{{note.title}}</li> {% endcomment %}
+        </ul>
+        <div class = "note_wrapper">
+            {% for note in notes %}
+                {% comment %} <li>{{note.title}}</li> {% endcomment %}
+                <table>
+                    <tr>
+                        <th style = "text-align: left; margin: 0; padding: 0;"><h2>{{note.title}}</h2></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>{{note.text}}<br />
+
+                            <sup>{{note.created}}</sup>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            {% endfor %}
+        </div>
+        <h1>Some randomn HTML here.</h1>
+        
+            </div>
+{% endblock %}
+
+### Let's add some style.
+* in the base html change the css to bootstrap.
+
+* Don't hard code buttons. Use django short codes. 
+{% extends "base.html" %}
+<!DOCTYPE html>
+{% block content %}
+        <h1>Welcome to SmartNotes!</h1>
+        <p>Today's Date: {{today}}</p>
+        <a href = "{% {% url "notes.list" %} %}" class = "btn btn-primary">Check Out SmartNotes!</a>
+{% endblock %}
+
+* Django doesn't know what end point to link, so we need to tell it. Go to urls.py in the notes app, since that's where we'll be directing the button to. 
+* Add a name to the path: path('notes/', views.NotesListView.as_view()), --> path('notes/', views.NotesListView.as_view(), name="notes.list"), <-- This is the endpoint where pointing to.

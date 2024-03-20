@@ -1,0 +1,26 @@
+
+body .wrapper{
+    font-family: 'Courier New', Courier, monospace;
+    padding: 50;
+    background-color:aquamarine;
+}
+
+.title_headers{
+    color: chocolate;
+}
+table{
+    background-color:black;
+    color: white;
+}
+th{
+    padding: 20px;
+}
+a:link{
+    text-decoration: none;
+    color: antiquewhite;
+}
+a:hover{
+    color: aquamarine;
+    text-decoration: none;
+    
+}
