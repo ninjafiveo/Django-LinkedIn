@@ -211,8 +211,65 @@ def detail(request, pk):
 * If you want you can add another template here for 404 errors.
 
 ### Class Based Views. 
+Class based views help you to create powerful endpoints without much effort. Extensive classes that implement typical view behavior.
+
+Let's test this in the home app. 
+* Go to views.py in the home app.
+from django.views.generic import TemplateView
+
+class Homeview(TemplateView):
+    template_name = 'home/welcome.html'
+    extra_context = {'today':datetime.today()} #! taken from the def home function. Commented out the code below.
+
+* Now we need to change the way the urls are defined. Go to urls.py
+from this: path('authorized/', views.authorized),
+to this: path('home/', views.HomeView.as_view()),
+
+* Now we need to do the same thing with the second function AuthorizedView in the views.py and create a new class
+
+class AuthorizedView(TemplateView):
+    template_name = 'home/authorized.html'
+
+* Now we need to handle authentication. To do so we need to add a helper class, "mixins" classes. We'll do it by adding the following:
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+and then add the login mixin to the class:
+class AuthorizedView(LoginRequiredMixin ,TemplateView):
+    template_name = 'home/authorized.html'
+    login_url = '/admin'
+
+And then fix the path to: path('authorized', views.AuthorizedView.as_view()),
 
 
+### A bit more on class-based views
+In notes views.py add the following import:
+from django.views.generic import ListView
 
+Add Class View:
+class NotesListView(ListView):
+    model = Notes
+    context_object_name = "notes" # this is our whole end point. Now we just need to change our end point url. 
+    template_name = "notes/notes_list.html"
 
+* Now for the detail view, modify the views import to: 
+  from django.views.generic import DetailView, ListView
+* Now add the class: 
+class NotesListView(ListView):
+    model = Notes
+    context_object_name = "notes" # this is our whole end point. Now we just need to change our end point url. 
+    template_name = "notes/notes_list.html"
+* For that we also need to change the url.py
+* 
 
+Notes Detailed View:
+class NotesDetailView(DetailView):# Takes care of complexity of errors
+    model = Notes
+    context_object_name = "note"
+    template_name = "notes/notes_details.html"
+
+Note urls.py:
+urlpatterns = [
+    # path('notes', views.list),
+    path('notes/', views.NotesListView.as_view()),
+    path('notes/<int:pk>', views.NotesDetailView.as_view()),
+]
